@@ -1,16 +1,32 @@
 .member {
+  border: solid 1px #ccc;
+  border-radius: 1rem;
+  padding: 1em;
+  margin-top: 0.5em;
 }
 .member-image {
+  float: left;
+  border-radius: 4rem;
+  width: 25%;
+  margin-right: 5%;
 }
 .member h2 {
+  font-size: 1rem;
+  margin: 0;
 }
 .member-actions:not(:hover) i {
+  display: none;
 }
 .member-actions:hover i {
+  color: #bbb;
 }
 .member-name {
+  color: #6c0e0e;
 }
 .member-joined {
+  font-size: 0.7rem;
+  color: #8f8f8f;
 }
 .member p {
+  margin-top: 1rem;
 }
