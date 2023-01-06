@@ -1,18 +1,29 @@
 .cell {
+  width: 10em;
+  height: 10em;
+  color: #000;
 }
 .cell i {
+  font-size: 7em;
 }
 i.bi-x-lg {
+  color: #f00;
 }
 i.bi-circle {
+  color: #0f0;
 }
 .cell.border {
+  border: solid 6px #000!important;
 }
 .cell.border-bottom {
+  border-bottom: solid 6px #000!important;
 }
 .cell.border-top {
+  border-top: solid 6px #000!important;
 }
 .cell.border-start {
+  border-left: solid 6px #000!important;
 }
 .cell.border-end {
+  border-right: solid 6px #000!important;
 }

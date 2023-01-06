@@ -11,7 +11,7 @@
   }
 
   /**
-   * Represents a cell or clicable location in the game.
+   * Represents a cell or clicable lcoation in the game.
    */
   class Cell {
     row;
@@ -154,7 +154,14 @@
      * Simulates a click event on a cell.
      */
     click() {
-      // TODO
+      if (! this.isRevealed()) {
+        if (this.isMarked()) {
+          this.unmark();
+        }
+        else {
+          this.mark();
+        }
+      }
     }
 
     /**
@@ -164,8 +171,23 @@
      */
     getIcon(isGameOver) {
       let className = '';
-
-      // TODO
+      
+      if (this.isMarked()) {
+        className = 'bi-flag-fill';
+      }
+      else if ((isGameOver) && (this.isMine())) {
+        className = 'bi-radioactive';
+      }
+      else {
+        let adjacentMineCount = this.getAdjacentMineCount();
+        if (adjacentMineCount) {
+          className = `bi-${ adjacentMineCount }-circle`;
+        }
+      }
+      
+      if (className) {
+        return $(`<i class="position-absolute top-50 start-50 translate-middle bi ${ className }"></i>`);
+      }
       return null;
     }
 
@@ -175,7 +197,16 @@
      * @returns {HTMLElement} The currently rendered cell.
      */
     render(isGameOver) {
-      // TODO
+      this.$el.empty();
+      if (this.isMarked() || this.isRevealed() || isGameOver) {
+        let $icon = this.getIcon(isGameOver);
+        if ($icon) {
+          $icon.appendTo(this.$el);
+        }
+      }
+      if (this.isRevealed() || isGameOver) {
+        this.$el.css('background-color', '#fff');
+      }
       return this.$el;
     }
   }
@@ -203,7 +234,24 @@
      * @param {Object} options The configured game options.
      */
     initialize(options) {
-      // TODO
+      const $cells = $('.game-cell', this.$el).toArray();
+      $cells.forEach((cell, index) => {
+        let $cell = $(cell)
+        $cell.empty();
+
+        this.cells.push(new Cell($cell));
+      });
+
+      this.#placeMines(this.mineCount);
+
+      // Update mine / adjacent counts.
+      this.cells.forEach(cell => {
+        if (! cell.isMine()) {
+          let adjacentCells = cell.getAdjacentCells(this.cells);
+          let mineCount = adjacentCells.reduce((prev,current) => prev + (current.isMine() ? 1 : 0), 0);
+          cell.status.push(mineCount);
+        }
+      });      
     }
 
     /**
@@ -247,8 +295,28 @@
     start() {
       console.log('Game starting...');
       this.render();
-
-      // TODO (Event Handling)
+      
+      this.$el.on('click', '.game-cell', (e) => {
+        const $cell = $(e.target).closest('.game-cell');
+        if ($cell.length) {
+          let cell = this.getCell($cell.data('row'), $cell.data('column'));
+          if (cell) {
+            cell.click();
+          }
+        }
+      });
+      this.$el.on('dblclick', '.game-cell', (e) => {
+        const $cell = $(e.target).closest('.game-cell');
+        if ($cell.length) {
+          let cell = this.getCell($cell.data('row'), $cell.data('column'));
+          if (cell) {
+            if (! cell.isMine()) {
+              cell.reveal(this.cells);
+            }
+            else this.gameOver();
+          }
+        }
+      });
     }
 
     /**
@@ -275,5 +343,10 @@
     }
   }
 
-  // TODO
+  $(document).ready(function() {
+    const $gameBoard = $('#game-board');
+
+    const game = new Game($gameBoard);
+    game.start();
+  });
 })(jQuery);
