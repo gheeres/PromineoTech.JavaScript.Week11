@@ -1,0 +1,13 @@
+.game-board {
+  line-height: 0
+}
+.game-row {
+  white-space: nowrap;
+}
+.game-cell {
+  display: table-cell;
+  height: 3em;
+  width: 3em;
+  border: solid 1px #000;
+  background-color: #dadada;
+}
